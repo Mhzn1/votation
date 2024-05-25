@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escolha de Voto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #719ce5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 35px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .form-row > div {
+      width: 48%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-row label {
+      margin-bottom: 5px;
+      color: #666;
+    }
+
+    .form-row input[type="text"],
+    .form-row input[type="date"],
+    .form-row select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    button[type="submit"] {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Eleições ONZ Finance</h1>
+    <form action="/registrar-eleitor-voto" method="POST">
+
+      <div class="form-row">
+        <div>
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" name="nome" required>
+        </div>
+        <div>
+          <label for="cpf">CPF:</label>
+          <input type="text" id="cpf" name="cpf" maxlength="11" required pattern="\d{11}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="tituloEleitor">Título de Eleitor:</label>
+          <input type="text" id="tituloEleitor" name="tituloEleitor" maxlength="12" required>
+        </div>
+        <div>
+          <label for="sexo">Sexo:</label>
+          <select id="sexo" name="sexo" required>
+            <option value="">Selecione o sexo</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="O">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="dataNascimento">Data de Nascimento:</label>
+          <input type="date" id="dataNascimento" name="dataNascimento" required>
+        </div>
+        <div>
+          <label for="candidato">Selecione o candidato:</label>
+          <select id="candidato" name="candidato_id" required>
+            <!-- Opções de candidatos serão preenchidas dinamicamente -->
+          </select>
+        </div>
+      </div>
+
+      <button type="submit">Votar</button>
+    </form>
+  </div>
+
+  <script>
+    // Preencher dinamicamente as opções do select com os candidatos
+    fetch('/candidatos')
+      .then(response => response.json())
+      .then(candidatos => {
+        const selectCandidato = document.getElementById('candidato');
+        candidatos.forEach(candidato => {
+          const option = document.createElement('option');
+          option.value = candidato.candidato_id;
+          option.textContent = `${candidato.nome} - ${candidato.cargo_nome} (${candidato.partido_sigla})`;
+          selectCandidato.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Erro ao carregar candidatos:', error));
+  </script>
+</body>
+</html>
